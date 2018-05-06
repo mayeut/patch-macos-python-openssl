@@ -45,12 +45,14 @@ pushd openssl-$OPENSSL_VERSION
 	./Configure darwin-i386-cc --install_prefix=$INSTALL_DIR/i386 $OPENSSL_CONF &> /dev/null
 	make depend &>/dev/null
 	make all &>/dev/null
+	make test &> /dev/null
 	make install_sw &>/dev/null
 	make clean &>/dev/null
 
 	./Configure darwin64-x86_64-cc enable-ec_nistp_64_gcc_128 --install_prefix=$INSTALL_DIR/x86_64 $OPENSSL_CONF &> /dev/null
 	make depend &>/dev/null
 	make all &>/dev/null
+	make test &> /dev/null
 	make install_sw &>/dev/null
 	make clean &>/dev/null
 
@@ -102,3 +104,5 @@ PY64_OPENSSL_VERSION=$($PYTHON_PREFIX/bin/python$PYTHON_VERSION -c "import ssl; 
 PY32_OPENSSL_VERSION=$($PYTHON_PREFIX/bin/python$PYTHON_VERSION-32 -c "import ssl; print(ssl.OPENSSL_VERSION)")
 test "$OPENSSL_VERSION" = "$PY64_OPENSSL_VERSION"
 test "$OPENSSL_VERSION" = "$PY32_OPENSSL_VERSION"
+$PYTHON_PREFIX/bin/python$PYTHON_VERSION -m test test_ssl
+$PYTHON_PREFIX/bin/python$PYTHON_VERSION-32 -m test test_ssl
