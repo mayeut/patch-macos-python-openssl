@@ -1,0 +1,20 @@
+language: generic
+os: osx
+osx_image: xcode6.4
+matrix:
+  include:
+  - env: PYTHON_VERSION=3.4
+  - env: PYTHON_VERSION=3.5
+
+script: ./create-patch.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: KF56BlrhwGcIMFVlbY/67pQjuIj3GF94He7S4ZHzr6JXIirBQdtAb2Kg8lsAXZLzaqD/bvwxU+WoSQSFpsMDdU01kBADwUWxIweGkIT8FHVkChRZatNXWQ8qlZuLdQMtGYDbh0JKaYai7kSBbgC6yy3LQ/PYAGuGhv4KwO29HvyLCJK2GKeyTbc9CVPoNoo0g1LlDF1mig2yVLlu8ckEH0UKnC0fU1u4vZ5U0OHloNCTbvsjEzgBJ/MHGapEYsUuP/P/4mRuJHEVbUlZAGav0oK31cRiYmQhDfCKdMZ/467wy95nsTtG74xGOD8GebNiDzC+1rgel/Fkl3cGmlDoaOqRJqahPTCGNIbUlyWN6ZK23C4VusXHKfVuDXAVBJQveNWiD3VArJkVya00ZH+d6MTe9L2qVf/11EjvAl6lbNmhlOlPoS+pl+DIB7mlwCNAUtFV0AfJtiweMUMNjMdaYOjdaydbjpHh0/U1ykC6mYJJpkDPRLL0qpwyU3CVA55P9LZAf23NaNctc91AXJQA+3vJP4wmX9G9x0HA0FNvtOENA5CHDZJNDNoCS3g9D1ARZbtHW6VHYxS5xkZA96I5fZ1UIPiCYeVl/1BfftSmkjrmL0DXGRmBWVvir7IJQD1iVGODz0DnudJDpAPL6H3JgsXBeT0iASOoDMwRywBqlYA=
+  file_glob: true
+  file: "patch-macos-python-*-openssl-*.tar.gz"
+  skip_cleanup: true
+  on:
+    repo: mayeut/patch-macos-python-openssl
+    tags: true
