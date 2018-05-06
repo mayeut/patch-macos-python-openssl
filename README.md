@@ -20,5 +20,5 @@ sudo tar -C /Library/Frameworks/Python.framework/Versions/3.4/ -xmf /tmp/patch-m
 For Python 3.5.4:
 ```
 curl -fsSLO https://github.com/mayeut/patch-macos-python-openssl/releases/download/v0.1.0/patch-macos-python-3.5-openssl-v0.1.0.tar.gz
-sudo tar -C /Library/Frameworks/Python.framework/Versions/3.4/ -xmf /tmp/patch-macos-python-3.5-openssl-v0.1.0.tar.gz
+sudo tar -C /Library/Frameworks/Python.framework/Versions/3.5/ -xmf /tmp/patch-macos-python-3.5-openssl-v0.1.0.tar.gz
 ```
