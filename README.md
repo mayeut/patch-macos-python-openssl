@@ -1,5 +1,5 @@
-patch-macos-python-openssl
-==========================
+patch-macos-python-openssl [![badge-build]][link-build]
+=======================================================
 Create _ssl module patch with updated OpenSSL for macOS Python 3.4.4 & 3.5.4 **official installers**
 
 Why a patch ?
@@ -22,3 +22,6 @@ For Python 3.5.4:
 curl -fsSLO https://github.com/mayeut/patch-macos-python-openssl/releases/download/v0.1.0/patch-macos-python-3.5-openssl-v0.1.0.tar.gz
 sudo tar -C /Library/Frameworks/Python.framework/Versions/3.5/ -xmf /tmp/patch-macos-python-3.5-openssl-v0.1.0.tar.gz
 ```
+
+[badge-build]: https://travis-ci.org/mayeut/patch-macos-python-openssl.svg?branch=master "Build Status"
+[link-build]: https://travis-ci.org/mayeut/patch-macos-python-openssl "Build Status"
