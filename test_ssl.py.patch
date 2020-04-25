@@ -1,0 +1,95 @@
+--- test_ssl.py	2020-10-10 16:22:33.000000000 +0200
++++ test_ssl.py	2020-10-10 16:18:43.000000000 +0200
+@@ -25,6 +25,7 @@
+ HOST = support.HOST
+ IS_LIBRESSL = ssl.OPENSSL_VERSION.startswith('LibreSSL')
+ IS_OPENSSL_1_1 = not IS_LIBRESSL and ssl.OPENSSL_VERSION_INFO >= (1, 1, 0)
++IS_OPENSSL_1_1_1 = not IS_LIBRESSL and ssl.OPENSSL_VERSION_INFO >= (1, 1, 1)
+
+
+ def data_file(*name):
+@@ -69,8 +70,9 @@
+ BADKEY = data_file("badkey.pem")
+ NOKIACERT = data_file("nokia.pem")
+ NULLBYTECERT = data_file("nullbytecert.pem")
++TALOS_INVALID_CRLDP = data_file("talos-2019-0758.pem")
+
+-DHFILE = data_file("dh1024.pem")
++DHFILE = data_file("ffdh3072.pem")
+ BYTES_DHFILE = os.fsencode(DHFILE)
+
+
+@@ -226,9 +228,9 @@
+                           (('commonName', 'localhost'),))
+                         )
+         # Note the next three asserts will fail if the keys are regenerated
+-        self.assertEqual(p['notAfter'], asn1time('Oct  5 23:01:56 2020 GMT'))
+-        self.assertEqual(p['notBefore'], asn1time('Oct  8 23:01:56 2010 GMT'))
+-        self.assertEqual(p['serialNumber'], 'D7C7381919AFC24E')
++        self.assertEqual(p['notAfter'], asn1time('Aug 26 14:23:15 2028 GMT'))
++        self.assertEqual(p['notBefore'], asn1time('Aug 29 14:23:15 2018 GMT'))
++        self.assertEqual(p['serialNumber'], '98A7CF88C74A32ED')
+         self.assertEqual(p['subject'],
+                          ((('countryName', 'XY'),),
+                           (('localityName', 'Castle Anthrax'),),
+@@ -252,6 +254,28 @@
+         self.assertEqual(p['crlDistributionPoints'],
+                          ('http://SVRIntl-G3-crl.verisign.com/SVRIntlG3.crl',))
+
++    @unittest.skipIf(sys.version_info[0:3] < (3, 5, 7), "fixed in 3.5.7")
++    def test_parse_cert_CVE_2019_5010(self):
++        p = ssl._ssl._test_decode_cert(TALOS_INVALID_CRLDP)
++        if support.verbose:
++            sys.stdout.write("\n" + pprint.pformat(p) + "\n")
++        self.assertEqual(
++            p,
++            {
++                'issuer': (
++                    (('countryName', 'UK'),), (('commonName', 'cody-ca'),)),
++                'notAfter': 'Jun 14 18:00:58 2028 GMT',
++                'notBefore': 'Jun 18 18:00:58 2018 GMT',
++                'serialNumber': '02',
++                'subject': ((('countryName', 'UK'),),
++                            (('commonName',
++                              'codenomicon-vm-2.test.lal.cisco.com'),)),
++                'subjectAltName': (
++                    ('DNS', 'codenomicon-vm-2.test.lal.cisco.com'),),
++                'version': 3
++            }
++        )
++
+     def test_parse_cert_CVE_2013_4238(self):
+         p = ssl._ssl._test_decode_cert(NULLBYTECERT)
+         if support.verbose:
+@@ -835,6 +859,7 @@
+             ctx.set_ciphers("^$:,;?*'dorothyx")
+
+     @skip_if_broken_ubuntu_ssl
++    @unittest.skipIf(IS_OPENSSL_1_1_1, "bpo-36576: fail on OpenSSL 1.1.1")
+     def test_options(self):
+         ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+         # OP_ALL | OP_NO_SSLv2 | OP_NO_SSLv3 is the default value
+@@ -3025,6 +3050,7 @@
+                 self.assertIs(s.version(), None)
+
+         @unittest.skipUnless(ssl.HAS_ECDH, "test requires ECDH-enabled OpenSSL")
++        @unittest.skipIf(IS_OPENSSL_1_1_1, "bpo-36576: fail on OpenSSL 1.1.1")
+         def test_default_ecdh_curve(self):
+             # Issue #21015: elliptic curve-based Diffie Hellman key exchange
+             # should be enabled by default on SSL contexts.
+@@ -3154,6 +3180,7 @@
+             self.assertIs(stats['client_alpn_protocol'], None)
+
+         @unittest.skipUnless(ssl.HAS_ALPN, "ALPN support needed for this test")
++        @unittest.skipIf(IS_OPENSSL_1_1_1, "bpo-36576: fail on OpenSSL 1.1.1")
+         def test_alpn_protocols(self):
+             server_protocols = ['foo', 'bar', 'milkshake']
+             protocol_tests = [
+@@ -3334,6 +3361,7 @@
+             self.assertEqual(cm.exception.reason, 'TLSV1_ALERT_INTERNAL_ERROR')
+             self.assertIn("TypeError", stderr.getvalue())
+
++        @unittest.skipIf(IS_OPENSSL_1_1_1, "bpo-36576: fail on OpenSSL 1.1.1")
+         def test_shared_ciphers(self):
+             server_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+             server_context.load_cert_chain(SIGNED_CERTFILE)

@@ -3,7 +3,6 @@ os: osx
 osx_image: xcode6.4
 matrix:
   include:
-  - env: PYTHON_VERSION=3.4
   - env: PYTHON_VERSION=3.5
 
 script: ./create-patch.sh
