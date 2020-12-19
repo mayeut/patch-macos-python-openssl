@@ -1,5 +1,9 @@
-patch-macos-python-openssl [![badge-build]][link-build]
-=======================================================
+**THIS REPOSITORY IS NOW ARCHIVED (READ-ONLY) NOW THAT CPYTHON 3.5 HAS REACHED EOL**
+====================================================================================
+
+patch-macos-python-openssl
+==========================
+
 Create _ssl module patch with updated OpenSSL for macOS Python 3.5.4 **official installers**
 
 Why a patch ?
